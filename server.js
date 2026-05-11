@@ -100,7 +100,7 @@ app.use((err, req, res, next) => {
 // ─── Database + Start ─────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/crypto-galaxy')
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('🌌 MongoDB connected');
     server.listen(PORT, () => {
