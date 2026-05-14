@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const Transaction = require('../models/Transaction');
-const User = require('../models/User');
+const User = require('../models/User').default;
 const auth = require('../middleware/auth');
 const { sendEmail, sendSms, templates } = require('../services/notificationService');
 
