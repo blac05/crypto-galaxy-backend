@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const User = require('../models/User').default;
+const User = require('../models/User');
 const auth = require('../middleware/auth');
 const { sendEmail, sendSms, templates } = require('../services/notificationService');
 
