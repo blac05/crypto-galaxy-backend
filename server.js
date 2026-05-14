@@ -25,6 +25,8 @@ const io = new Server(server, {
 });
 
 // Map userId -> socketId for targeted notifications
+const profileRoutes = require('./routes/profileRoutes');
+app.use('/api', profileRoutes);
 const userSockets = new Map();
 app.set('io', io);
 app.set('userSockets', userSockets);
@@ -110,8 +112,16 @@ mongoose.connect(process.env.MONGODB_URI)
       console.log(`🔐 Auth: JWT + OTP (email + SMS)`);
       console.log(`📡 Socket.IO: Real-time notifications active`);
     });
-  })
+  }) 
   .catch((err) => {
     console.error('❌ MongoDB connection failed:', err.message);
     process.exit(1);
   });
+socket.on('joinChat', ({ chatId }) => socket.join(chatId));
+socket.on('leaveChat', ({ chatId }) => socket.leave(chatId));
+socket.on('chatMessage', (msg) => {
+  io.to(msg.chatId).emit('chatMessage', msg);
+});
+socket.on('typing', ({ chatId, senderId }) => {
+  socket.to(chatId).emit('userTyping', { senderId });
+});
