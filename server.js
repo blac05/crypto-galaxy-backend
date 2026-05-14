@@ -10,10 +10,35 @@ const jwt = require('jsonwebtoken');
 
 const authRoutes = require('./routes/auth');
 const walletRoutes = require('./routes/wallet');
+const profileRoutes = require('./routes/profileRoutes');
+const giftCardRoutes = require('./routes/giftCards');
 const { paymentsRouter, marketRouter } = require('./routes/payments');
 
 const app = express();
 const server = http.createServer(app);
+
+// ─── Middleware (MUST come before routes) ─────────────────────────────────────
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use(cors({
+  origin: function (origin, callback) { callback(null, true); },
+  credentials: true,
+}));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { message: 'Too many requests, please try again later' },
+});
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { message: 'Too many auth attempts. Try again in 15 minutes.' },
+});
+app.use('/api/', limiter);
+app.use('/api/auth/', authLimiter);
 
 // ─── Socket.IO Setup ──────────────────────────────────────────────────────────
 const io = new Server(server, {
@@ -24,9 +49,6 @@ const io = new Server(server, {
   },
 });
 
-// Map userId -> socketId for targeted notifications
-const profileRoutes = require('./routes/profileRoutes');
-app.use('/api', profileRoutes);
 const userSockets = new Map();
 app.set('io', io);
 app.set('userSockets', userSockets);
@@ -47,43 +69,29 @@ io.on('connection', (socket) => {
   console.log(`🔌 User connected: ${socket.userId}`);
   userSockets.set(socket.userId, socket.id);
 
+  // ── Gift Card Chat (was outside io.on — fixed) ──
+  socket.on('joinChat', ({ chatId }) => socket.join(chatId));
+  socket.on('leaveChat', ({ chatId }) => socket.leave(chatId));
+  socket.on('chatMessage', (msg) => {
+    io.to(msg.chatId).emit('chatMessage', msg);
+  });
+  socket.on('typing', ({ chatId, senderId }) => {
+    socket.to(chatId).emit('userTyping', { senderId });
+  });
+
   socket.on('disconnect', () => {
     userSockets.delete(socket.userId);
     console.log(`🔌 User disconnected: ${socket.userId}`);
   });
 });
 
-// ─── Middleware ───────────────────────────────────────────────────────────────
-app.use(helmet({ contentSecurityPolicy: false }));
-app.use(cors({
-  origin: function (origin, callback) { callback(null, true); },
-  credentials: true,
-}));
-
-
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
-
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
-  message: { message: 'Too many requests, please try again later' },
-});
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  message: { message: 'Too many auth attempts. Try again in 15 minutes.' },
-});
-
-app.use('/api/', limiter);
-app.use('/api/auth/', authLimiter);
-
 // ─── Routes ───────────────────────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/payments', paymentsRouter);
 app.use('/api/market', marketRouter);
+app.use('/api', profileRoutes);
+app.use('/api/gift-cards', giftCardRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -112,16 +120,8 @@ mongoose.connect(process.env.MONGODB_URI)
       console.log(`🔐 Auth: JWT + OTP (email + SMS)`);
       console.log(`📡 Socket.IO: Real-time notifications active`);
     });
-  }) 
+  })
   .catch((err) => {
     console.error('❌ MongoDB connection failed:', err.message);
     process.exit(1);
   });
-socket.on('joinChat', ({ chatId }) => socket.join(chatId));
-socket.on('leaveChat', ({ chatId }) => socket.leave(chatId));
-socket.on('chatMessage', (msg) => {
-  io.to(msg.chatId).emit('chatMessage', msg);
-});
-socket.on('typing', ({ chatId, senderId }) => {
-  socket.to(chatId).emit('userTyping', { senderId });
-});
