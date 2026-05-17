@@ -92,6 +92,8 @@ app.use('/api/payments', paymentsRouter);
 app.use('/api/market', marketRouter);
 app.use('/api', profileRoutes);
 app.use('/api/gift-cards', giftCardRoutes);
+app.use("/api/cards",  require('./routes/cards'));
+app.use("/api/news",   require('./routes/news'));
 
 // Health check
 app.get('/api/health', (req, res) => {
