@@ -51,7 +51,7 @@ router.post("/generate", authMiddleware, async (req, res) => {
       cvvHash:  await bcrypt.hash(rawCVV, 10),
       name:     req.user.name?.toUpperCase() || "GALAXY USER",
       type:     "VISA",
-      tier:     "PLATINUM",
+      tier:     "PLATINUM", 
       balance:  0,
     });
 
