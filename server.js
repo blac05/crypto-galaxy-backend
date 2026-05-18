@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const router = express.Router();
 const http = require('http');
 const { Server } = require('socket.io');
 const mongoose = require('mongoose');
@@ -214,7 +215,158 @@ app.use("/api/news", newsRoutes());
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: '🚀 Crypto Galaxy API is live', timestamp: new Date() });
 });
+router.get('/profile', (req, res) => {
+  res.json({ user: 'profile' });
+}
 
+router.get('/payments', (req, res) => {
+  res.json({ payments: [] });
+});
+router.get('/market', (req, res) => {
+  res.json({ market: 'data' });
+});
+router.get('/stock', (req, res) => {
+  res.json({ stocks: [] });
+});
+router.get('/crypto', (req, res) => {
+  res.json({ cryptos: [] });
+});
+router.get('/portfolio', (req, res) => {
+  res.json({ portfolio: {} });
+});
+router.get('/watchlist', (req, res) => {
+  res.json({ watchlist: [] });
+});
+router.get('/orders', (req, res) => {
+  res.json({ orders: [] });
+});
+router.get('/alerts', (req, res) => {
+  res.json({ alerts: [] });
+});
+router.get('/transactions', (req, res) => {
+  res.json({ transactions: [] });
+});
+router.get('/analytics', (req, res) => {
+  res.json({ analytics: {} });
+});
+router.get('/leaderboard', (req, res) => {
+  res.json({ leaderboard: [] });
+});
+router.get('/communities', (req, res) => {
+  res.json({ communities: [] });
+});
+router.get('/notifications', (req, res) => {
+  res.json({ notifications: [] });
+});
+router.get('/support', (req, res) => {
+  res.json({ supportTickets: [] });
+});
+router.get('/admin', (req, res) => {
+  res.json({ adminData: {} });
+});
+router.get('/dev', (req, res) => {
+  res.json({ devData: {} });
+});
+router.get('/stock-prices', (req, res) => {
+  res.json({ stockPrices: [] });
+});
+router.get('/crypto-prices', (req, res) => {
+  res.json({ cryptoPrices: [] });
+});
+router.get('/stock-news', (req, res) => {
+  res.json({ stockNews: [] });
+});
+router.get('/crypto-news', (req, res) => {
+  res.json({ cryptoNews: [] });
+});
+router.get('/cards', (req, res) => {
+  res.json({ cards: [] });
+});
+router.get('/news', (req, res) => {
+  res.json({ news: [] });
+});
+router.get('/auth', (req, res) => {
+  res.json({ auth: 'status' });
+});
+router.get('/wallet', (req, res) => {
+  res.json({ wallet: {} });
+});
+router.get('/profile', (req, res) => {
+  res.json({ profile: {} });
+});
+router.get('/gift-cards', (req, res) => {
+  res.json({ giftCards: [] });
+});
+router.get('/payments', (req, res) => {
+  res.json({ payments: [] });
+});
+router.get('/market', (req, res) => {
+  res.json({ market: 'data' });
+}); 
+router.get('/stock', (req, res) => {
+  res.json({ stocks: [] });
+});
+router.get('/crypto', (req, res) => {
+  res.json({ cryptos: [] });
+});
+router.get('/portfolio', (req, res) => {
+  res.json({ portfolio: {} });
+});
+router.get('/watchlist', (req, res) => {
+  res.json({ watchlist: [] });
+});
+router.get('/orders', (req, res) => {
+  res.json({ orders: [] });
+});
+router.get('/alerts', (req, res) => {
+  res.json({ alerts: [] });
+});
+router.get('/transactions', (req, res) => {
+  res.json({ transactions: [] });
+}); 
+router.get('/analytics', (req, res) => {
+  res.json({ analytics: {} });
+});
+router.get('/leaderboard', (req, res) => {
+  res.json({ leaderboard: [] });
+});
+router.get('/communities', (req, res) => {
+  res.json({ communities: [] });
+});
+router.get('/notifications', (req, res) => {
+  res.json({ notifications: [] });
+});
+router.get('/support', (req, res) => {
+  res.json({ supportTickets: [] });
+});
+router.get('/admin', (req, res) => {
+  res.json({ adminData: {} });
+});
+router.get('/dev', (req, res) => {
+  res.json({ devData: {} });
+});
+router.get('/dev', (req, res) => {
+  res.json({ devData: {} });
+});
+router.get('/stock-prices', (req, res) => {
+  res.json({ stockPrices: [] });
+});
+router.get('/crypto-prices', (req, res) => {
+  res.json({ cryptoPrices: [] });
+}); 
+router.get('/stock-news', (req, res) => {
+  res.json({ stockNews: [] });
+});
+router.get('/crypto-news', (req, res) => {
+  res.json({ cryptoNews: [] });
+});
+router.get('/cards', (req, res) => {
+  res.json({ cards: [] });
+});
+router.get('/news', (req, res) => {
+  res.json({ news: [] });
+}); 
+app.use('/api', router);
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
