@@ -1,6 +1,6 @@
 const express        = require("express");
 const router         = express.Router();
-const StockOrder     = require("../models/StockOrder");
+const StockOrder     = require('../models/StockOrder');
 const StockPortfolio = require("../models/StockPortfolio");
 const StockWatchlist = require("../models/StockWatchlist");
 const authMiddleware = require("../middleware/auth");

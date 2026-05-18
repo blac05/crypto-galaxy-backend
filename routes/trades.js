@@ -1,6 +1,6 @@
 const express  = require("express");
 const router   = express.Router();
-const Trade    = require("../models/Trade");     // your existing model
+const Trade    = require('../models/Trade');     // your existing model
 const authMiddleware = require("../middleware/auth");
 
 // ── POST /api/trades ──────────────────────────────────────────
