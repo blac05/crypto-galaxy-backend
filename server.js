@@ -17,7 +17,8 @@ const paymentsRoutes = require('./routes/payments');
 const cardRoutes     = require('./routes/cards');
 const newsRoutes     = require('./routes/news');
 const stockRoutes    = require('./routes/stocks');
-const tradeRoutes    = require('./routes/trades');
+const tradeRoutes = require('./routes/trades');
+const userRoutes     = require('./routes/userRoutes');
 
 const app    = express();
 const server = http.createServer(app);
@@ -62,7 +63,8 @@ io.on('connection', (socket) => {
 
 // ─── API Routes ───────────────────────────────────────────────
 app.use('/api/auth',       authRoutes);
-app.use('/api/wallet',     walletRoutes);
+app.use('/api/wallet', walletRoutes);
+app.use('/api/users',     userRoutes);
 app.use('/api/profile',    profileRoutes);
 app.use('/api/gift-cards', giftCardRoutes);
 app.use('/api/payments',   paymentsRoutes);
